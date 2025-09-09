@@ -1,3 +1,3 @@
 # ademo
 
-1. blob使用示例：<a href="https://smalljerry.cn/ademo/blob-examples.html" target="_blank">跳转</a>
+1. blob使用示例：[跳转](https://smalljerry.cn/ademo/blob-examples.html)
