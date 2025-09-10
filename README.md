@@ -1,3 +1,4 @@
 # ademo
 
-1. blob使用示例：[跳转](https://smalljerry.cn/ademo/blob-examples.html)
+1. [Blob使用示例](https://smalljerry.cn/ademo/blob-examples.html)
+2. [NAT类型](https://smalljerry.cn/ademo/nat-types.html)

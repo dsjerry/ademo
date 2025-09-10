@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAT类型可视化展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#8B5CF6',
+                        warning: '#F59E0B',
+                        danger: '#EF4444',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .network-line {
+                stroke-dasharray: 10;
+                animation: dash 2s linear infinite;
+            }
+            .packet {
+                transition: all 1s ease-in-out;
+            }
+            .nat-box {
+                box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+            }
+            .device {
+                transition: transform 0.3s ease;
+            }
+            .device:hover {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 20;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+    <!-- 导航栏 -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
+            <h1 class="text-2xl font-bold text-primary">
+                <i class="fa fa-exchange mr-2"></i>NAT类型可视化
+            </h1>
+            <nav class="hidden md:flex space-x-6">
+                <button class="nat-tab py-2 px-1 border-b-2 border-primary text-primary font-medium" data-type="full-cone">完全圆锥型</button>
+                <button class="nat-tab py-2 px-1 border-b-2 border-transparent hover:text-primary transition-colors" data-type="address-restricted">地址限制圆锥型</button>
+                <button class="nat-tab py-2 px-1 border-b-2 border-transparent hover:text-primary transition-colors" data-type="port-restricted">端口限制圆锥型</button>
+                <button class="nat-tab py-2 px-1 border-b-2 border-transparent hover:text-primary transition-colors" data-type="symmetric">对称型</button>
+            </nav>
+            <button class="md:hidden text-gray-500 focus:outline-none" id="menu-toggle">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white shadow-lg absolute w-full" id="mobile-menu">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <button class="nat-tab py-2 px-1 text-left border-l-4 border-primary text-primary font-medium" data-type="full-cone">完全圆锥型</button>
+                <button class="nat-tab py-2 px-1 text-left border-l-4 border-transparent hover:text-primary transition-colors" data-type="address-restricted">地址限制圆锥型</button>
+                <button class="nat-tab py-2 px-1 text-left border-l-4 border-transparent hover:text-primary transition-colors" data-type="port-restricted">端口限制圆锥型</button>
+                <button class="nat-tab py-2 px-1 text-left border-l-4 border-transparent hover:text-primary transition-colors" data-type="symmetric">对称型</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- 说明部分 -->
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4 text-dark" id="nat-type-title">完全圆锥型NAT (Full Cone NAT)</h2>
+            <p class="text-gray-700 mb-4" id="nat-description">
+                完全圆锥型NAT为内网设备创建一个固定的公网IP和端口映射。任何外部设备都可以通过这个固定的公网地址向内网设备发送数据，无论该外部设备是否曾被内网设备访问过。
+            </p>
+            <div class="bg-blue-50 p-4 rounded-md border-l-4 border-primary">
+                <h3 class="font-semibold text-primary mb-2">特点</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1" id="nat-features">
+                    <li>内网设备的所有连接使用相同的公网IP和端口</li>
+                    <li>任何外部设备都可以通过该公网地址向内网设备发送数据</li>
+                    <li>是穿透性最好的NAT类型</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 可视化区域 -->
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8 overflow-x-auto">
+            <div class="min-w-[800px] relative">
+                <!-- 网络拓扑图 -->
+                <div class="flex justify-between items-center">
+                    <!-- 内网区域 -->
+                    <div class="flex flex-col items-center w-1/3">
+                        <h3 class="text-lg font-semibold mb-4 text-center">内网 (Private Network)</h3>
+                        <div class="device bg-green-100 p-3 rounded-lg border-2 border-secondary text-center mb-6">
+                            <i class="fa fa-desktop text-2xl text-secondary mb-1"></i>
+                            <p class="font-medium">内网设备</p>
+                            <p class="text-sm text-gray-600">192.168.1.100:5000</p>
+                            <div id="internal-device-indicator" class="w-2 h-2 bg-green-500 rounded-full mt-1 mx-auto"></div>
+                        </div>
+                    </div>
+
+                    <!-- NAT设备 -->
+                    <div class="nat-box bg-blue-100 p-4 rounded-lg border-2 border-primary text-center z-10">
+                        <i class="fa fa-random text-3xl text-primary mb-2"></i>
+                        <h3 class="font-bold">NAT设备</h3>
+                        <div id="nat-mapping" class="mt-2 text-sm">
+                            <p>192.168.1.100:5000 → <span class="font-medium">203.0.113.1:8000</span></p>
+                        </div>
+                    </div>
+
+                    <!-- 公网区域 -->
+                    <div class="flex flex-col items-center w-1/3">
+                        <h3 class="text-lg font-semibold mb-4 text-center">公网 (Public Network)</h3>
+                        <div class="device bg-purple-100 p-3 rounded-lg border-2 border-accent text-center mb-6" id="server1">
+                            <i class="fa fa-server text-2xl text-accent mb-1"></i>
+                            <p class="font-medium">服务器 A</p>
+                            <p class="text-sm text-gray-600">198.51.100.10:80</p>
+                            <div class="server1-indicator w-2 h-2 bg-purple-500 rounded-full mt-1 mx-auto"></div>
+                        </div>
+                        <div class="device bg-purple-100 p-3 rounded-lg border-2 border-accent text-center" id="server2">
+                            <i class="fa fa-server text-2xl text-accent mb-1"></i>
+                            <p class="font-medium">服务器 B</p>
+                            <p class="text-sm text-gray-600">198.51.100.20:8080</p>
+                            <div class="server2-indicator w-2 h-2 bg-purple-500 rounded-full mt-1 mx-auto"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 连接线和数据包将通过JS动态生成 -->
+                <div id="connections-container" class="absolute top-0 left-0 w-full h-full pointer-events-none">
+                    <!-- SVG连接线 -->
+                    <svg class="w-full h-full" id="connection-lines">
+                        <!-- 线将通过JS动态添加 -->
+                    </svg>
+                    
+                    <!-- 数据包将通过JS动态添加 -->
+                    <div id="packets-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 控制按钮 -->
+        <section class="flex flex-wrap gap-4 justify-center mb-8">
+            <button id="start-animation" class="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center">
+                <i class="fa fa-play mr-2"></i>开始演示
+            </button>
+            <button id="reset-animation" class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center">
+                <i class="fa fa-refresh mr-2"></i>重置
+            </button>
+            <button id="show-info" class="bg-accent hover:bg-accent/90 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center">
+                <i class="fa fa-info-circle mr-2"></i>详细说明
+            </button>
+        </section>
+
+        <!-- 信息模态框 -->
+        <div id="info-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto m-4">
+                <div class="p-6 border-b">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-dark" id="modal-title">完全圆锥型NAT详细说明</h3>
+                        <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fa fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6" id="modal-content">
+                    <!-- 内容将通过JS动态填充 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>NAT类型可视化展示 &copy; 2023</p>
+            <p class="text-gray-400 text-sm mt-2">四种NAT类型：完全圆锥型、地址限制圆锥型、端口限制圆锥型和对称型</p>
+        </div>
+    </footer>
+
+    <script>
+        // 当前显示的NAT类型
+        let currentNatType = 'full-cone';
+        let animationRunning = false;
+        let animationInterval;
+        
+        // NAT类型数据
+        const natTypes = {
+            'full-cone': {
+                title: '完全圆锥型NAT (Full Cone NAT)',
+                description: '完全圆锥型NAT为内网设备创建一个固定的公网IP和端口映射。任何外部设备都可以通过这个固定的公网地址向内网设备发送数据，无论该外部设备是否曾被内网设备访问过。',
+                features: [
+                    '内网设备的所有连接使用相同的公网IP和端口',
+                    '任何外部设备都可以通过该公网地址向内网设备发送数据',
+                    '是穿透性最好的NAT类型'
+                ],
+                mapping: '192.168.1.100:5000 → 203.0.113.1:8000',
+                info: `
+                    <p class="mb-4">完全圆锥型NAT是最容易穿透的NAT类型，它的工作原理如下：</p>
+                    <ol class="list-decimal list-inside space-y-2 mb-4">
+                        <li>当内网设备（192.168.1.100:5000）首次访问公网时，NAT设备为其分配一个固定的公网IP和端口（如203.0.113.1:8000）</li>
+                        <li>此后，该内网设备的所有对外连接都使用这个固定的公网地址</li>
+                        <li>任何公网设备，无论是否被该内网设备访问过，都可以通过203.0.113.1:8000向内网设备发送数据</li>
+                    </ol>
+                    <p class="mb-4">这种NAT类型对P2P通信非常友好，因为一旦公网地址被确定，其他设备可以直接通过该地址建立连接。</p>
+                    <p>常见于一些家用路由器的默认配置。</p>
+                `,
+                animationSteps: [
+                    // 内网设备访问服务器A
+                    {from: 'internal', to: 'server1', label: '请求'},
+                    // 服务器A响应
+                    {from: 'server1', to: 'internal', label: '响应'},
+                    // 内网设备访问服务器B（使用相同的公网端口）
+                    {from: 'internal', to: 'server2', label: '请求'},
+                    // 服务器B响应
+                    {from: 'server2', to: 'internal', label: '响应'},
+                    // 服务器B主动发起连接（完全圆锥型允许）
+                    {from: 'server2', to: 'internal', label: '主动连接', color: 'green'}
+                ]
+            },
+            'address-restricted': {
+                title: '地址限制圆锥型NAT (Address-Restricted Cone NAT)',
+                description: '地址限制圆锥型NAT为内网设备创建固定的公网IP和端口映射，但只有曾被内网设备访问过的IP地址才能通过该公网地址向内网设备发送数据。',
+                features: [
+                    '内网设备的所有连接使用相同的公网IP和端口',
+                    '只有被内网设备访问过的IP地址才能向内网设备发送数据',
+                    '对端口没有限制，同一IP的任何端口都可以发送数据'
+                ],
+                mapping: '192.168.1.100:5000 → 203.0.113.1:8000',
+                info: `
+                    <p class="mb-4">地址限制圆锥型NAT比完全圆锥型增加了一定的安全性，它的工作原理如下：</p>
+                    <ol class="list-decimal list-inside space-y-2 mb-4">
+                        <li>当内网设备（192.168.1.100:5000）首次访问公网时，NAT设备为其分配一个固定的公网IP和端口（如203.0.113.1:8000）</li>
+                        <li>该内网设备的所有对外连接都使用这个固定的公网地址</li>
+                        <li>只有被内网设备访问过的IP地址才能通过203.0.113.1:8000向内网设备发送数据</li>
+                        <li>对端口没有限制，同一IP的任何端口都可以发送数据</li>
+                    </ol>
+                    <p>这种NAT类型在安全性和P2P友好性之间取得了一定平衡。</p>
+                `,
+                animationSteps: [
+                    // 内网设备访问服务器A
+                    {from: 'internal', to: 'server1', label: '请求'},
+                    // 服务器A响应
+                    {from: 'server1', to: 'internal', label: '响应'},
+                    // 内网设备访问服务器B
+                    {from: 'internal', to: 'server2', label: '请求'},
+                    // 服务器B响应
+                    {from: 'server2', to: 'internal', label: '响应'},
+                    // 服务器B主动发起连接（允许）
+                    {from: 'server2', to: 'internal', label: '主动连接', color: 'green'},
+                    // 模拟未被访问过的设备尝试连接（被拒绝）
+                    {from: 'server1', to: 'internal', label: '新端口连接', color: 'red', rejected: true}
+                ]
+            },
+            'port-restricted': {
+                title: '端口限制圆锥型NAT (Port-Restricted Cone NAT)',
+                description: '端口限制圆锥型NAT为内网设备创建固定的公网IP和端口映射，只有曾被内网设备访问过的IP地址和端口组合才能向内网设备发送数据。',
+                features: [
+                    '内网设备的所有连接使用相同的公网IP和端口',
+                    '只有被内网设备访问过的IP地址和端口组合才能发送数据',
+                    '比地址限制圆锥型NAT增加了端口限制'
+                ],
+                mapping: '192.168.1.100:5000 → 203.0.113.1:8000',
+                info: `
+                    <p class="mb-4">端口限制圆锥型NAT比地址限制圆锥型增加了更多安全性，它的工作原理如下：</p>
+                    <ol class="list-decimal list-inside space-y-2 mb-4">
+                        <li>当内网设备（192.168.1.100:5000）首次访问公网时，NAT设备为其分配一个固定的公网IP和端口（如203.0.113.1:8000）</li>
+                        <li>该内网设备的所有对外连接都使用这个固定的公网地址</li>
+                        <li>只有被内网设备访问过的IP地址和端口组合才能通过203.0.113.1:8000向内网设备发送数据</li>
+                        <li>即使是同一IP的不同端口，若未被访问过，也无法发送数据</li>
+                    </ol>
+                    <p>这种NAT类型提供了更好的安全性，但对P2P通信增加了一定难度。</p>
+                `,
+                animationSteps: [
+                    // 内网设备访问服务器A的80端口
+                    {from: 'internal', to: 'server1', label: '请求:80'},
+                    // 服务器A的80端口响应
+                    {from: 'server1', to: 'internal', label: '响应:80'},
+                    // 内网设备访问服务器B的8080端口
+                    {from: 'internal', to: 'server2', label: '请求:8080'},
+                    // 服务器B的8080端口响应
+                    {from: 'server2', to: 'internal', label: '响应:8080'},
+                    // 服务器B的8080端口主动连接（允许）
+                    {from: 'server2', to: 'internal', label: '主动连接:8080', color: 'green'},
+                    // 服务器A使用新端口尝试连接（被拒绝）
+                    {from: 'server1', to: 'internal', label: '连接:8080', color: 'red', rejected: true}
+                ]
+            },
+            'symmetric': {
+                title: '对称型NAT (Symmetric NAT)',
+                description: '对称型NAT为内网设备的每个不同目标IP和端口组合创建不同的公网端口映射。只有曾被内网设备访问过的特定IP和端口才能通过对应的映射端口进行通信。',
+                features: [
+                    '不同的目标IP和端口组合使用不同的公网端口',
+                    '只有被内网设备访问过的特定IP和端口才能通信',
+                    '是P2P穿透难度最高的NAT类型'
+                ],
+                mapping: `192.168.1.100:5000 → 203.0.113.1:8000<br>
+                          192.168.1.100:5000 → 203.0.113.1:8001`,
+                info: `
+                    <p class="mb-4">对称型NAT是最复杂的NAT类型，对P2P通信最不友好，它的工作原理如下：</p>
+                    <ol class="list-decimal list-inside space-y-2 mb-4">
+                        <li>当内网设备（192.168.1.100:5000）访问不同的公网目标时，NAT设备会分配不同的公网端口</li>
+                        <li>例如，访问服务器A（198.51.100.10:80）可能映射到203.0.113.1:8000</li>
+                        <li>而访问服务器B（198.51.100.20:8080）可能映射到203.0.113.1:8001</li>
+                        <li>只有被内网设备访问过的特定IP和端口组合才能通过对应的映射端口进行通信</li>
+                    </ol>
+                    <p class="mb-4">对称型NAT通常用于企业网络或运营商的大型网络中，提供了最高的安全性，但使得P2P直接连接变得非常困难。</p>
+                    <p>在这种情况下，通常需要使用TURN服务器作为中继来实现通信。</p>
+                `,
+                animationSteps: [
+                    // 内网设备访问服务器A（映射到8000端口）
+                    {from: 'internal', to: 'server1', label: '请求 → 8000'},
+                    // 服务器A响应到8000端口
+                    {from: 'server1', to: 'internal', label: '响应 → 8000'},
+                    // 内网设备访问服务器B（映射到8001端口）
+                    {from: 'internal', to: 'server2', label: '请求 → 8001'},
+                    // 服务器B响应到8001端口
+                    {from: 'server2', to: 'internal', label: '响应 → 8001'},
+                    // 服务器B尝试使用服务器A的映射端口连接（被拒绝）
+                    {from: 'server2', to: 'internal', label: '连接8000', color: 'red', rejected: true},
+                    // 服务器A尝试使用服务器B的映射端口连接（被拒绝）
+                    {from: 'server1', to: 'internal', label: '连接8001', color: 'red', rejected: true}
+                ]
+            }
+        };
+
+        // DOM元素
+        const natTabs = document.querySelectorAll('.nat-tab');
+        const natTypeTitle = document.getElementById('nat-type-title');
+        const natDescription = document.getElementById('nat-description');
+        const natFeatures = document.getElementById('nat-features');
+        const natMapping = document.getElementById('nat-mapping');
+        const startButton = document.getElementById('start-animation');
+        const resetButton = document.getElementById('reset-animation');
+        const showInfoButton = document.getElementById('show-info');
+        const infoModal = document.getElementById('info-modal');
+        const closeModalButton = document.getElementById('close-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const connectionLines = document.getElementById('connection-lines');
+        const packetsContainer = document.getElementById('packets-container');
+
+        // 初始化页面
+        function init() {
+            updateNatInfo(currentNatType);
+            setupEventListeners();
+            drawConnectionLines();
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // NAT类型切换
+            natTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const type = tab.getAttribute('data-type');
+                    if (type !== currentNatType) {
+                        currentNatType = type;
+                        updateNatInfo(type);
+                        resetAnimation();
+                        
+                        // 更新标签样式
+                        natTabs.forEach(t => {
+                            t.classList.remove('border-primary', 'text-primary');
+                            t.classList.add('border-transparent', 'hover:text-primary');
+                        });
+                        tab.classList.remove('border-transparent', 'hover:text-primary');
+                        tab.classList.add('border-primary', 'text-primary');
+                        
+                        // 关闭移动菜单
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // 动画控制
+            startButton.addEventListener('click', toggleAnimation);
+            resetButton.addEventListener('click', resetAnimation);
+            
+            // 信息模态框
+            showInfoButton.addEventListener('click', () => {
+                modalTitle.textContent = natTypes[currentNatType].title;
+                modalContent.innerHTML = natTypes[currentNatType].info;
+                infoModal.classList.remove('hidden');
+            });
+            
+            closeModalButton.addEventListener('click', () => {
+                infoModal.classList.add('hidden');
+            });
+            
+            // 点击模态框外部关闭
+            infoModal.addEventListener('click', (e) => {
+                if (e.target === infoModal) {
+                    infoModal.classList.add('hidden');
+                }
+            });
+            
+            // 移动菜单切换
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // 更新NAT信息
+        function updateNatInfo(type) {
+            const natData = natTypes[type];
+            natTypeTitle.textContent = natData.title;
+            natDescription.textContent = natData.description;
+            
+            // 更新特点列表
+            natFeatures.innerHTML = '';
+            natData.features.forEach(feature => {
+                const li = document.createElement('li');
+                li.textContent = feature;
+                natFeatures.appendChild(li);
+            });
+            
+            // 更新映射信息
+            natMapping.innerHTML = natData.mapping;
+        }
+
+        // 绘制连接线
+        function drawConnectionLines() {
+            // 清除现有线条
+            while (connectionLines.firstChild) {
+                connectionLines.removeChild(connectionLines.firstChild);
+            }
+            
+            // 获取元素位置
+            const internalDevice = document.querySelector('.device.bg-green-100');
+            const natDevice = document.querySelector('.nat-box');
+            const server1 = document.getElementById('server1');
+            const server2 = document.getElementById('server2');
+            
+            const internalRect = internalDevice.getBoundingClientRect();
+            const natRect = natDevice.getBoundingClientRect();
+            const server1Rect = server1.getBoundingClientRect();
+            const server2Rect = server2.getBoundingClientRect();
+            const containerRect = document.getElementById('connections-container').getBoundingClientRect();
+            
+            // 计算相对位置
+            const internalX = internalRect.left + internalRect.width/2 - containerRect.left;
+            const internalY = internalRect.top + internalRect.height/2 - containerRect.top;
+            const natX = natRect.left + natRect.width/2 - containerRect.left;
+            const natY = natRect.top + natRect.height/2 - containerRect.top;
+            const server1X = server1Rect.left + server1Rect.width/2 - containerRect.left;
+            const server1Y = server1Rect.top + server1Rect.height/2 - containerRect.top;
+            const server2X = server2Rect.left + server2Rect.width/2 - containerRect.top;
+            const server2Y = server2Rect.top + server2Rect.height/2 - containerRect.top;
+            
+            // 内网到NAT的线
+            const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line1.setAttribute('x1', internalX);
+            line1.setAttribute('y1', internalY);
+            line1.setAttribute('x2', natX);
+            line1.setAttribute('y2', natY);
+            line1.setAttribute('stroke', '#3B82F6');
+            line1.setAttribute('stroke-width', '2');
+            line1.setAttribute('class', 'network-line');
+            connectionLines.appendChild(line1);
+            
+            // NAT到服务器1的线
+            const line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line2.setAttribute('x1', natX);
+            line2.setAttribute('y1', natY);
+            line2.setAttribute('x2', server1X);
+            line2.setAttribute('y2', server1Y);
+            line2.setAttribute('stroke', '#3B82F6');
+            line2.setAttribute('stroke-width', '2');
+            line2.setAttribute('class', 'network-line');
+            connectionLines.appendChild(line2);
+            
+            // NAT到服务器2的线
+            const line3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line3.setAttribute('x1', natX);
+            line3.setAttribute('y1', natY);
+            line3.setAttribute('x2', server2X);
+            line3.setAttribute('y2', server2Y);
+            line3.setAttribute('stroke', '#3B82F6');
+            line3.setAttribute('stroke-width', '2');
+            line3.setAttribute('class', 'network-line');
+            connectionLines.appendChild(line3);
+        }
+
+        // 切换动画状态
+        function toggleAnimation() {
+            if (animationRunning) {
+                stopAnimation();
+                startButton.innerHTML = '<i class="fa fa-play mr-2"></i>继续演示';
+            } else {
+                startAnimation();
+                startButton.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停演示';
+            }
+        }
+
+        // 开始动画
+        function startAnimation() {
+            if (animationRunning) return;
+            
+            animationRunning = true;
+            let stepIndex = 0;
+            const steps = natTypes[currentNatType].animationSteps;
+            
+            // 添加脉冲动画
+            document.getElementById('internal-device-indicator').classList.add('pulse-animation');
+            document.querySelector('.server1-indicator').classList.add('pulse-animation');
+            document.querySelector('.server2-indicator').classList.add('pulse-animation');
+            
+            // 执行动画步骤
+            runNextStep();
+            
+            function runNextStep() {
+                if (!animationRunning || stepIndex >= steps.length) {
+                    if (stepIndex >= steps.length) {
+                        stopAnimation();
+                        startButton.innerHTML = '<i class="fa fa-play mr-2"></i>重新演示';
+                    }
+                    return;
+                }
+                
+                const step = steps[stepIndex];
+                createPacketAnimation(step.from, step.to, step.label, step.color, step.rejected);
+                
+                stepIndex++;
+                animationInterval = setTimeout(runNextStep, 3000);
+            }
+        }
+
+        // 创建数据包动画
+        function createPacketAnimation(from, to, label, color = 'blue', rejected = false) {
+            // 获取元素位置
+            const fromElement = from === 'internal' 
+                ? document.querySelector('.device.bg-green-100')
+                : document.getElementById(from === 'server1' ? 'server1' : 'server2');
+                
+            const toElement = to === 'internal' 
+                ? document.querySelector('.device.bg-green-100')
+                : document.getElementById(to === 'server1' ? 'server1' : 'server2');
+                
+            const natElement = document.querySelector('.nat-box');
+            
+            const fromRect = fromElement.getBoundingClientRect();
+            const toRect = toElement.getBoundingClientRect();
+            const natRect = natElement.getBoundingClientRect();
+            const containerRect = document.getElementById('connections-container').getBoundingClientRect();
+            
+            // 计算相对位置
+            const fromX = fromRect.left + fromRect.width/2 - containerRect.left;
+            const fromY = fromRect.top + fromRect.height/2 - containerRect.top;
+            const toX = toRect.left + toRect.width/2 - containerRect.left;
+            const toY = toRect.top + toRect.height/2 - containerRect.top;
+            const natX = natRect.left + natRect.width/2 - containerRect.left;
+            const natY = natRect.top + natRect.height/2 - containerRect.top;
+            
+            // 创建数据包元素
+            const packet = document.createElement('div');
+            packet.className = `packet absolute rounded-full flex items-center justify-center text-white text-xs font-bold px-2 py-1 shadow-md`;
+            packet.style.backgroundColor = color === 'blue' ? '#3B82F6' : 
+                                         color === 'green' ? '#10B981' : '#EF4444';
+            packet.textContent = label;
+            packet.style.left = `${fromX - 15}px`;
+            packet.style.top = `${fromY - 10}px`;
+            packet.style.zIndex = '10';
+            packet.style.pointerEvents = 'auto';
+            
+            packetsContainer.appendChild(packet);
+            
+            // 添加NAT转换效果
+            setTimeout(() => {
+                // 移动到NAT设备
+                packet.style.left = `${natX - 15}px`;
+                packet.style.top = `${natY - 10}px`;
+                
+                // 短暂停留模拟NAT处理
+                setTimeout(() => {
+                    if (rejected) {
+                        // 添加拒绝动画
+                        packet.innerHTML += ' <i class="fa fa-times"></i>';
+                        packet.style.transform = 'scale(0)';
+                        
+                        // 移除元素
+                        setTimeout(() => {
+                            if (packet.parentNode) {
+                                packet.parentNode.removeChild(packet);
+                            }
+                        }, 500);
+                    } else {
+                        // 继续移动到目标
+                        packet.style.left = `${toX - 15}px`;
+                        packet.style.top = `${toY - 10}px`;
+                        
+                        // 到达后淡出
+                        setTimeout(() => {
+                            packet.style.opacity = '0';
+                            
+                            // 移除元素
+                            setTimeout(() => {
+                                if (packet.parentNode) {
+                                    packet.parentNode.removeChild(packet);
+                                }
+                            }, 500);
+                        }, 1000);
+                    }
+                }, 500);
+            }, 500);
+        }
+
+        // 停止动画
+        function stopAnimation() {
+            animationRunning = false;
+            clearTimeout(animationInterval);
+            
+            // 移除脉冲动画
+            document.getElementById('internal-device-indicator').classList.remove('pulse-animation');
+            document.querySelector('.server1-indicator').classList.remove('pulse-animation');
+            document.querySelector('.server2-indicator').classList.remove('pulse-animation');
+        }
+
+        // 重置动画
+        function resetAnimation() {
+            stopAnimation();
+            startButton.innerHTML = '<i class="fa fa-play mr-2"></i>开始演示';
+            
+            // 清除所有数据包
+            while (packetsContainer.firstChild) {
+                packetsContainer.removeChild(packetsContainer.firstChild);
+            }
+            
+            // 重新绘制连接线（应对窗口大小变化）
+            drawConnectionLines();
+        }
+
+        // 窗口大小变化时重新绘制连接线
+        window.addEventListener('resize', drawConnectionLines);
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
