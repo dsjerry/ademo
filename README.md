@@ -12,3 +12,10 @@
 
 ## 友链 friend link
 1. [DBInsight 数据库学习](https://db.docs.zxinrun.cn/)
+
+
+## 关于
+
+smalljerry, aka dsjerry. 2026 ~ future.
+
+
