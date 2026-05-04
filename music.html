@@ -560,124 +560,6 @@
     .gen-cover-btn.loading .spinner-small { display: inline-block; }
     .gen-cover-btn.loading .btn-icon { display: none; }
 
-    /* ── Fixed Bottom Player ──────────────────────────────────────────────── */
-    #fixedPlayer {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 999;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-    #fixedPlayer.visible { display: block; }
-    #fixedPlayer .fp-inner {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    #fixedPlayer .fp-cover {
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      object-fit: cover;
-      background: var(--surface2);
-      flex-shrink: 0;
-    }
-    #fixedPlayer .fp-info {
-      min-width: 0;
-      flex: 1;
-    }
-    #fixedPlayer .fp-title {
-      font-size: 12px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    #fixedPlayer .fp-subtitle {
-      font-size: 10px;
-      color: var(--text-dim);
-    }
-    #fixedPlayer .fp-bar-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 2;
-    }
-    #fixedPlayer .fp-time {
-      font-size: 10px;
-      color: var(--text-dim);
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-    #fixedPlayer .fp-progress {
-      -webkit-appearance: none;
-      appearance: none;
-      flex: 1;
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
-    }
-    #fixedPlayer .fp-progress::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-    #fixedPlayer .fp-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    #fixedPlayer .fp-btn {
-      background: none;
-      border: none;
-      color: var(--text);
-      cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
-      border-radius: 6px;
-      transition: background 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #fixedPlayer .fp-btn:hover { background: var(--surface2); }
-    #fixedPlayer .fp-btn.play-pause {
-      width: 32px;
-      height: 32px;
-      background: var(--accent);
-      color: white;
-      border-radius: 50%;
-      font-size: 14px;
-    }
-    #fixedPlayer .fp-btn.play-pause:hover { background: var(--accent2); color: white; }
-    #fixedPlayer .fp-close {
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      cursor: pointer;
-      font-size: 12px;
-      padding: 4px 6px;
-      border-radius: 4px;
-      transition: color 0.15s;
-    }
-    #fixedPlayer .fp-close:hover { color: var(--red); }
-
-    /* ── body padding-bottom for fixed player ──────────────────────────────── */
-    body.fp-open { padding-bottom: 70px; }
-
     /* Feedback */
     .feedback-area {
       display: flex;
@@ -1449,36 +1331,43 @@
       if (outputFormat === 'url' && data.audio) {
         audioHtml = `
           <div class="audio-player-wrap">
-            <div class="player-layout">
-              <div class="player-cover placeholder" id="playerCover">🎵</div>
-              <div class="player-controls">
-                <div class="player-progress-wrap">
+            <div class="result-card">
+              <div class="result-card-cover" id="resultCover">
+                <div class="result-cover-placeholder" id="playerCover">🎵</div>
+              </div>
+              <div class="result-card-body">
+                <div class="result-card-meta">
+                  <span class="meta-tag ${data.status === 2 ? 'meta-done' : 'meta-pending'}">${data.status === 2 ? '已完成' : '合成中'}</span>
+                  ${info.music_duration ? `<span class="meta-chip">${(info.music_duration / 1000).toFixed(1)}s</span>` : ''}
+                  ${info.music_size ? `<span class="meta-chip">${(info.music_size / 1024 / 1024).toFixed(1)} MB</span>` : ''}
+                </div>
+                <div class="result-player-row">
                   <span class="player-time" id="curTime">0:00</span>
-                  <input type="range" id="seekBar" min="0" max="100" value="0" />
+                  <div class="player-seek-wrap">
+                    <input type="range" id="seekBar" min="0" max="100" value="0" class="seek-slider" />
+                    <div class="seek-fill" id="seekFill" style="width:0%"></div>
+                  </div>
                   <span class="player-time" id="totTime">0:00</span>
                 </div>
-                <div class="player-buttons">
-                  <button class="player-btn play-btn" id="playBtn" onclick="togglePlay(this)">▶</button>
-                  <button class="player-btn" onclick="toggleMute(this)" title="静音">🔊</button>
-                  <div class="volume-wrap">
-                    <input type="range" id="volBar" min="0" max="1" step="0.02" value="1" oninput="setVolume(this.value)" />
+                <div class="result-player-controls">
+                  <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay(this)">
+                    <span class="ctrl-icon">▶</span>
+                  </button>
+                  <button class="ctrl-btn" onclick="toggleMute(this)">🔊</button>
+                  <div class="vol-wrap">
+                    <input type="range" id="volBar" min="0" max="1" step="0.02" value="1" class="vol-slider" oninput="setVolume(this.value)" />
                   </div>
+                  <div class="ctrl-spacer"></div>
+                  <a class="action-btn action-primary" href="${data.audio}" download="music.mp3">⬇ 下载</a>
+                  <button class="action-btn action-secondary" id="genCoverBtn" onclick="generateCover()">
+                    <span class="spinner-small"></span>
+                    <span class="btn-icon">🎨 封面</span>
+                  </button>
+                  <a class="action-btn action-secondary" id="downloadCoverBtn" style="display:none" download="cover.jpg">⬇ 封面</a>
                 </div>
               </div>
             </div>
-            <audio id="bgAudio" src="${data.audio}" preload="metadata"></audio>
-            <div class="cover-wrap">
-              <img class="cover-img" id="coverImg" src="" alt="封面" style="display:none" />
-              <div class="cover-actions">
-                <a class="download-btn" href="${data.audio}" download="music.mp3">⬇ 下载音频</a>
-                <button class="download-btn" style="background:var(--surface2);" onclick="fpLoadTrack('${data.audio}', document.getElementById('songTitle').value || '音乐', '')">▶ 常驻播放</button>
-                <button class="gen-cover-btn" id="genCoverBtn" onclick="generateCover()">
-                  <span class="spinner-small"></span>
-                  <span class="btn-icon">🎨 生成封面</span>
-                </button>
-                <a class="download-btn" id="downloadCoverBtn" style="display:none" download="cover.jpg">⬇ 下载封面</a>
-              </div>
-            </div>
+            <img class="cover-img" id="coverImg" src="" alt="封面" style="display:none" />
           </div>`;
       } else if (data.audio) {
         const hex = data.audio;
@@ -1492,49 +1381,49 @@
         const url = URL.createObjectURL(blob);
         audioHtml = `
           <div class="audio-player-wrap">
-            <div class="player-layout">
-              <div class="player-cover placeholder" id="playerCover">🎵</div>
-              <div class="player-controls">
-                <div class="player-progress-wrap">
+            <div class="result-card">
+              <div class="result-card-cover" id="resultCover">
+                <div class="result-cover-placeholder" id="playerCover">🎵</div>
+              </div>
+              <div class="result-card-body">
+                <div class="result-card-meta">
+                  <span class="meta-tag ${data.status === 2 ? 'meta-done' : 'meta-pending'}">${data.status === 2 ? '已完成' : '合成中'}</span>
+                  ${info.music_duration ? `<span class="meta-chip">${(info.music_duration / 1000).toFixed(1)}s</span>` : ''}
+                  ${info.music_size ? `<span class="meta-chip">${(info.music_size / 1024 / 1024).toFixed(1)} MB</span>` : ''}
+                </div>
+                <div class="result-player-row">
                   <span class="player-time" id="curTime">0:00</span>
-                  <input type="range" id="seekBar" min="0" max="100" value="0" />
+                  <div class="player-seek-wrap">
+                    <input type="range" id="seekBar" min="0" max="100" value="0" class="seek-slider" />
+                    <div class="seek-fill" id="seekFill" style="width:0%"></div>
+                  </div>
                   <span class="player-time" id="totTime">0:00</span>
                 </div>
-                <div class="player-buttons">
-                  <button class="player-btn play-btn" id="playBtn" onclick="togglePlay(this)">▶</button>
-                  <button class="player-btn" onclick="toggleMute(this)" title="静音">🔊</button>
-                  <div class="volume-wrap">
-                    <input type="range" id="volBar" min="0" max="1" step="0.02" value="1" oninput="setVolume(this.value)" />
+                <div class="result-player-controls">
+                  <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay(this)">
+                    <span class="ctrl-icon">▶</span>
+                  </button>
+                  <button class="ctrl-btn" onclick="toggleMute(this)">🔊</button>
+                  <div class="vol-wrap">
+                    <input type="range" id="volBar" min="0" max="1" step="0.02" value="1" class="vol-slider" oninput="setVolume(this.value)" />
                   </div>
+                  <div class="ctrl-spacer"></div>
+                  <a class="action-btn action-primary" href="${url}" download="music.mp3">⬇ 下载</a>
+                  <button class="action-btn action-secondary" id="genCoverBtn" onclick="generateCover()">
+                    <span class="spinner-small"></span>
+                    <span class="btn-icon">🎨 封面</span>
+                  </button>
+                  <a class="action-btn action-secondary" id="downloadCoverBtn" style="display:none" download="cover.jpg">⬇ 封面</a>
                 </div>
               </div>
             </div>
-            <audio id="bgAudio" src="${url}" preload="metadata"></audio>
-            <div class="cover-wrap">
-              <img class="cover-img" id="coverImg" src="" alt="封面" style="display:none" />
-              <div class="cover-actions">
-                <a class="download-btn" href="${url}" download="music.mp3">⬇ 下载音频</a>
-                <button class="download-btn" style="background:var(--surface2);" onclick="fpLoadTrack('${url}', document.getElementById('songTitle').value || '音乐', '')">▶ 常驻播放</button>
-                <button class="gen-cover-btn" id="genCoverBtn" onclick="generateCover()">
-                  <span class="spinner-small"></span>
-                  <span class="btn-icon">🎨 生成封面</span>
-                </button>
-                <a class="download-btn" id="downloadCoverBtn" style="display:none" download="cover.jpg">⬇ 下载封面</a>
-              </div>
-            </div>
+            <img class="cover-img" id="coverImg" src="" alt="封面" style="display:none" />
           </div>`;
       } else {
         audioHtml = '<p style="color:var(--text-dim)">无音频数据，请检查模型响应</p>';
       }
 
       content.innerHTML = `
-        <div class="response-meta">
-          <div class="meta-item"><span class="meta-key">状态</span><span class="meta-val" style="color:${data.status === 2 ? 'var(--green)' : 'var(--yellow)'}">${data.status === 2 ? '已完成' : '合成中'}</span></div>
-          ${info.music_duration ? `<div class="meta-item"><span class="meta-key">时长</span><span class="meta-val">${(info.music_duration / 1000).toFixed(1)}s</span></div>` : ''}
-          ${info.music_sample_rate ? `<div class="meta-item"><span class="meta-key">采样率</span><span class="meta-val">${info.music_sample_rate} Hz</span></div>` : ''}
-          ${info.bitrate ? `<div class="meta-item"><span class="meta-key">比特率</span><span class="meta-val">${info.bitrate / 1000} kbps</span></div>` : ''}
-          ${info.music_size ? `<div class="meta-item"><span class="meta-key">文件大小</span><span class="meta-val">${(info.music_size / 1024 / 1024).toFixed(1)} MB</span></div>` : ''}
-        </div>
         ${audioHtml}
       `;
     }
@@ -1711,14 +1600,6 @@
         img.src = imageUrl;
         img.style.display = 'block';
 
-        // Sync to fixed player if visible
-        const fpCover = document.getElementById('fpCover');
-        const fpPlayer = document.getElementById('fixedPlayer');
-        if (fpPlayer && fpPlayer.classList.contains('visible') && fpCover) {
-          fpCover.src = imageUrl;
-          fpCover.style.display = 'block';
-        }
-
         // Setup download
         dlBtn.href = imageUrl;
         dlBtn.style.display = 'inline-flex';
@@ -1803,72 +1684,6 @@
       });
     });
 
-    // ── Fixed Bottom Player ───────────────────────────────────────────────────
-    const fpAudio = document.getElementById('fpAudio');
-    const fpPlayer = document.getElementById('fixedPlayer');
-
-    function fpLoadTrack(src, title, coverSrc) {
-      if (!fpAudio || !fpPlayer) return;
-      fpAudio.src = src;
-      document.getElementById('fpTitle').textContent = title || '未知曲目';
-      const cover = document.getElementById('fpCover');
-      if (coverSrc) {
-        cover.src = coverSrc;
-        cover.style.display = 'block';
-      } else {
-        cover.style.display = 'none';
-      }
-      document.getElementById('fpCurTime').textContent = '0:00';
-      document.getElementById('fpTotTime').textContent = '0:00';
-      document.getElementById('fpSeek').value = 0;
-      document.getElementById('fpPlayBtn').textContent = '▶';
-      fpPlayer.classList.add('visible');
-      document.body.classList.add('fp-open');
-    }
-
-    function fpTogglePlay() {
-      if (!fpAudio) return;
-      if (fpAudio.paused) {
-        fpAudio.play();
-        document.getElementById('fpPlayBtn').textContent = '⏸';
-      } else {
-        fpAudio.pause();
-        document.getElementById('fpPlayBtn').textContent = '▶';
-      }
-    }
-
-    function fpClose() {
-      if (!fpAudio || !fpPlayer) return;
-      fpAudio.pause();
-      fpAudio.src = '';
-      fpPlayer.classList.remove('visible');
-      document.body.classList.remove('fp-open');
-    }
-
-    function fmt(s) {
-      s = Math.floor(s);
-      return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
-    }
-
-    if (fpAudio) {
-      fpAudio.addEventListener('loadedmetadata', () => {
-        document.getElementById('fpTotTime').textContent = fmt(fpAudio.duration);
-        document.getElementById('fpSeek').max = Math.floor(fpAudio.duration);
-      });
-      fpAudio.addEventListener('timeupdate', () => {
-        document.getElementById('fpCurTime').textContent = fmt(fpAudio.currentTime);
-        document.getElementById('fpSeek').value = Math.floor(fpAudio.currentTime);
-      });
-      fpAudio.addEventListener('ended', () => {
-        document.getElementById('fpPlayBtn').textContent = '▶';
-        document.getElementById('fpCurTime').textContent = '0:00';
-        document.getElementById('fpSeek').value = 0;
-      });
-      document.getElementById('fpSeek').addEventListener('input', (e) => {
-        fpAudio.currentTime = e.target.value;
-      });
-    }
-
     // ── Feedback ──────────────────────────────────────────────────────────────
     async function submitFeedback() {
       const path = document.getElementById('feedbackPath').value.trim();
@@ -1889,26 +1704,5 @@
       }
     }
   </script>
-
-  <!-- Fixed Bottom Player -->
-  <div id="fixedPlayer">
-    <div class="fp-inner">
-      <img class="fp-cover" id="fpCover" src="" alt="封面" />
-      <div class="fp-info">
-        <div class="fp-title" id="fpTitle">未选择音乐</div>
-        <div class="fp-subtitle" id="fpSubtitle">MiniMax 音乐</div>
-      </div>
-      <div class="fp-bar-wrap">
-        <span class="fp-time" id="fpCurTime">0:00</span>
-        <input type="range" class="fp-progress" id="fpSeek" min="0" max="100" value="0" />
-        <span class="fp-time" id="fpTotTime">0:00</span>
-      </div>
-      <div class="fp-controls">
-        <button class="fp-btn play-pause" id="fpPlayBtn" onclick="fpTogglePlay()">▶</button>
-      </div>
-      <button class="fp-close" onclick="fpClose()">✕</button>
-    </div>
-    <audio id="fpAudio" preload="metadata"></audio>
-  </div>
 </body>
 </html>
