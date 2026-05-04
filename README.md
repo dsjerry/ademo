@@ -5,6 +5,7 @@
 2. [threejs demo](https://threejs.smalljerry.cn/)
 3. [ffmpeg docs](https://ffmpeg.smalljerry.cn/)
 4. [webapi docs](https://webapi.smalljerry.cn/)
+5. 🎵 [MiniMax Music](https://smalljerry.cn/ademo/music.html) 音乐、歌词生成（Music、Lyrics Generation）
 
 ## 片段 fragment
 1. [Blob使用示例](https://smalljerry.cn/ademo/blob-examples.html)
