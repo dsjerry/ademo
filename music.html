@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +21,11 @@
       --yellow: #eab308;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       background: var(--bg);
@@ -46,6 +51,7 @@
       text-align: center;
       padding: 32px 0 8px;
     }
+
     .header h1 {
       font-size: 28px;
       font-weight: 700;
@@ -54,6 +60,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
     .header p {
       color: var(--text-dim);
       font-size: 14px;
@@ -69,6 +76,7 @@
       border-radius: 12px;
       padding: 4px;
     }
+
     .tab-btn {
       flex: 1;
       padding: 10px 16px;
@@ -81,7 +89,11 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .tab-btn:hover { color: var(--text); }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
     .tab-btn.active {
       background: var(--accent);
       color: white;
@@ -93,9 +105,16 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 28px;
+      margin-bottom: 20px;
     }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
 
     /* Form row */
     .form-row {
@@ -103,6 +122,7 @@
       flex-direction: column;
       gap: 6px;
     }
+
     .form-row label {
       font-size: 13px;
       font-weight: 600;
@@ -110,12 +130,16 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+
     .form-row .hint {
       font-size: 11px;
       color: var(--text-dim);
       margin-top: 2px;
     }
-    .form-row .hint.error { color: var(--red); }
+
+    .form-row .hint.error {
+      color: var(--red);
+    }
 
     input[type="text"],
     input[type="password"],
@@ -132,10 +156,14 @@
       transition: border-color 0.2s, box-shadow 0.2s;
       width: 100%;
     }
-    input:focus, textarea:focus, select:focus {
+
+    input:focus,
+    textarea:focus,
+    select:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
+
     textarea {
       resize: vertical;
       min-height: 140px;
@@ -152,9 +180,23 @@
     }
 
     /* Grid layouts */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
 
     /* Toggle */
     .toggle-row {
@@ -164,16 +206,29 @@
       padding: 10px 0;
       border-top: 1px solid var(--border);
     }
-    .toggle-row:first-child { border-top: none; }
+
+    .toggle-row:first-child {
+      border-top: none;
+    }
+
     .toggle-label {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
-    .toggle-label span { font-size: 14px; }
-    .toggle-label small { font-size: 11px; color: var(--text-dim); }
 
-    toggle-switch { flex-shrink: 0; }
+    .toggle-label span {
+      font-size: 14px;
+    }
+
+    .toggle-label small {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    toggle-switch {
+      flex-shrink: 0;
+    }
 
     /* Model selector */
     .model-grid {
@@ -181,6 +236,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
+
     .model-card {
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -192,14 +248,28 @@
       flex-direction: column;
       gap: 3px;
     }
-    .model-card:hover { border-color: var(--accent); }
+
+    .model-card:hover {
+      border-color: var(--accent);
+    }
+
     .model-card.active {
       border-color: var(--accent);
       background: rgba(124, 58, 237, 0.12);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
-    .model-card .model-name { font-size: 13px; font-weight: 600; color: var(--accent2); }
-    .model-card .model-desc { font-size: 11px; color: var(--text-dim); }
+
+    .model-card .model-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent2);
+    }
+
+    .model-card .model-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
     .model-card .model-badge {
       font-size: 10px;
       background: rgba(34, 197, 94, 0.15);
@@ -216,6 +286,7 @@
       gap: 6px;
       margin-top: 8px;
     }
+
     .tag-btn {
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -227,7 +298,11 @@
       transition: all 0.15s;
       font-family: monospace;
     }
-    .tag-btn:hover { border-color: var(--accent); color: var(--accent2); }
+
+    .tag-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+    }
 
     /* Submit button */
     .submit-btn {
@@ -245,30 +320,50 @@
       overflow: hidden;
       letter-spacing: 0.03em;
     }
+
     .submit-btn:hover:not(:disabled) {
       transform: translateY(-1px);
       box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
     }
+
     .submit-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
+
     .submit-btn .spinner {
       display: none;
-      width: 20px; height: 20px;
-      border: 2px solid rgba(255,255,255,0.3);
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
-    .submit-btn.loading .btn-text { display: none; }
-    .submit-btn.loading .spinner { display: inline-block; }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .submit-btn.loading .btn-text {
+      display: none;
+    }
+
+    .submit-btn.loading .spinner {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* Response area */
-    .response-area { display: none; }
-    .response-area.show { display: block; }
+    .response-area {
+      display: none;
+    }
+
+    .response-area.show {
+      display: block;
+      margin-top: 20px;
+    }
 
     .response-meta {
       display: flex;
@@ -279,9 +374,23 @@
       border-radius: 10px;
       margin-bottom: 16px;
     }
-    .meta-item { display: flex; flex-direction: column; gap: 2px; }
-    .meta-item .meta-key { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
-    .meta-item .meta-val { font-size: 14px; font-weight: 600; }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meta-item .meta-key {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .meta-item .meta-val {
+      font-size: 14px;
+      font-weight: 600;
+    }
 
     /* ── Custom Audio Player ─────────────────────────────────────── */
     .audio-player-wrap {
@@ -292,11 +401,13 @@
       flex-direction: column;
       gap: 16px;
     }
+
     .player-layout {
       display: flex;
       gap: 16px;
       align-items: center;
     }
+
     .player-cover {
       width: 80px;
       height: 80px;
@@ -306,6 +417,7 @@
       flex-shrink: 0;
       border: 1px solid var(--border);
     }
+
     .player-cover.placeholder {
       display: flex;
       align-items: center;
@@ -313,6 +425,7 @@
       font-size: 28px;
       color: var(--text-dim);
     }
+
     .player-controls {
       flex: 1;
       display: flex;
@@ -320,11 +433,13 @@
       gap: 10px;
       min-width: 0;
     }
+
     .player-progress-wrap {
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .player-progress-wrap input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
@@ -335,6 +450,7 @@
       outline: none;
       cursor: pointer;
     }
+
     .player-progress-wrap input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 12px;
@@ -344,20 +460,24 @@
       cursor: pointer;
       transition: transform 0.15s;
     }
+
     .player-progress-wrap input[type="range"]::-webkit-slider-thumb:hover {
       transform: scale(1.3);
     }
+
     .player-time {
       font-size: 12px;
       color: var(--text-dim);
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
+
     .player-buttons {
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .player-btn {
       background: none;
       border: none;
@@ -373,7 +493,12 @@
       width: 32px;
       height: 32px;
     }
-    .player-btn:hover { background: var(--surface); color: var(--accent2); }
+
+    .player-btn:hover {
+      background: var(--surface);
+      color: var(--accent2);
+    }
+
     .player-btn.play-btn {
       width: 36px;
       height: 36px;
@@ -382,13 +507,19 @@
       color: white;
       border-radius: 50%;
     }
-    .player-btn.play-btn:hover { background: var(--accent2); color: white; }
+
+    .player-btn.play-btn:hover {
+      background: var(--accent2);
+      color: white;
+    }
+
     .volume-wrap {
       display: flex;
       align-items: center;
       gap: 6px;
       margin-left: auto;
     }
+
     .volume-wrap input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
@@ -399,6 +530,7 @@
       outline: none;
       cursor: pointer;
     }
+
     .volume-wrap input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 10px;
@@ -407,8 +539,12 @@
       background: var(--text-dim);
       cursor: pointer;
     }
+
     /* native audio hidden */
-    .audio-player-wrap audio { display: none; }
+    .audio-player-wrap audio {
+      display: none;
+    }
+
     .download-btn {
       display: inline-flex;
       align-items: center;
@@ -425,7 +561,10 @@
       width: fit-content;
       transition: background 0.2s;
     }
-    .download-btn:hover { background: var(--accent2); }
+
+    .download-btn:hover {
+      background: var(--accent2);
+    }
 
     .error-box {
       background: rgba(239, 68, 68, 0.1);
@@ -447,14 +586,23 @@
       font-size: 13px;
       color: var(--text-dim);
     }
+
     .status-dot {
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--yellow);
       flex-shrink: 0;
     }
-    .status-dot.done { background: var(--green); }
-    .status-dot.error { background: var(--red); }
+
+    .status-dot.done {
+      background: var(--green);
+    }
+
+    .status-dot.error {
+      background: var(--red);
+    }
+
     .progress-bar {
       height: 3px;
       background: var(--border);
@@ -462,6 +610,7 @@
       overflow: hidden;
       flex: 1;
     }
+
     .progress-bar .progress-fill {
       height: 100%;
       background: var(--accent);
@@ -475,7 +624,11 @@
       display: flex;
       gap: 10px;
     }
-    .api-key-wrap input { flex: 1; }
+
+    .api-key-wrap input {
+      flex: 1;
+    }
+
     .toggle-visibility {
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -487,7 +640,11 @@
       transition: all 0.2s;
       flex-shrink: 0;
     }
-    .toggle-visibility:hover { border-color: var(--accent); color: var(--accent2); }
+
+    .toggle-visibility:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+    }
 
     /* Section titles */
     .section-title {
@@ -501,15 +658,29 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .divider { height: 1px; background: var(--border); margin: 6px 0; }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 6px 0;
+    }
 
     /* Cover mode fields */
-    .cover-fields { display: none; }
-    .cover-fields.show { display: block; }
+    .cover-fields {
+      display: none;
+    }
+
+    .cover-fields.show {
+      display: block;
+    }
 
     /* Cover feature id (two-step) */
-    .cover-feature-field { display: none; }
-    .cover-feature-field.show { display: block; }
+    .cover-feature-field {
+      display: none;
+    }
+
+    .cover-feature-field.show {
+      display: block;
+    }
 
     /* Cover image */
     .cover-wrap {
@@ -518,6 +689,7 @@
       align-items: flex-start;
       flex-wrap: wrap;
     }
+
     .cover-img {
       width: 180px;
       height: 180px;
@@ -527,13 +699,23 @@
       flex-shrink: 0;
       background: var(--surface2);
     }
+
     .cover-actions {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-    .cover-actions .download-btn { margin: 0; }
-    .cover-hint { font-size: 11px; color: var(--text-dim); max-width: 180px; }
+
+    .cover-actions .download-btn {
+      margin: 0;
+    }
+
+    .cover-hint {
+      font-size: 11px;
+      color: var(--text-dim);
+      max-width: 180px;
+    }
+
     .gen-cover-btn {
       padding: 8px 16px;
       background: var(--surface2);
@@ -547,18 +729,41 @@
       align-items: center;
       gap: 6px;
     }
-    .gen-cover-btn:hover { border-color: var(--accent); color: var(--accent2); }
-    .gen-cover-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .gen-cover-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+    }
+
+    .gen-cover-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .gen-cover-btn .spinner-small {
-      width: 14px; height: 14px;
-      border: 2px solid rgba(255,255,255,0.2);
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
       border-top-color: currentColor;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       display: none;
     }
-    .gen-cover-btn.loading .spinner-small { display: inline-block; }
-    .gen-cover-btn.loading .btn-icon { display: none; }
+
+    .gen-cover-btn.loading .spinner-small {
+      display: inline-block;
+    }
+
+    .gen-cover-btn.loading .btn-icon {
+      display: none;
+    }
+
+    .btn-gencover {
+      background: transparent;
+      color: #71579bcc;
+      border: none;
+      font-weight: 800;
+    }
 
     /* Feedback */
     .feedback-area {
@@ -567,7 +772,11 @@
       align-items: center;
       margin-top: 12px;
     }
-    .feedback-area input { flex: 1; }
+
+    .feedback-area input {
+      flex: 1;
+    }
+
     .feedback-area button {
       padding: 10px 16px;
       background: var(--surface2);
@@ -579,9 +788,22 @@
       transition: all 0.2s;
       white-space: nowrap;
     }
-    .feedback-area button:hover { border-color: var(--accent); color: var(--accent2); }
-    .feedback-msg { font-size: 12px; color: var(--green); margin-top: 6px; display: none; }
-    .feedback-msg.show { display: block; }
+
+    .feedback-area button:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+    }
+
+    .feedback-msg {
+      font-size: 12px;
+      color: var(--green);
+      margin-top: 6px;
+      display: none;
+    }
+
+    .feedback-msg.show {
+      display: block;
+    }
 
     /* Lyrics result */
     .lyrics-result {
@@ -595,8 +817,20 @@
       max-height: 400px;
       overflow-y: auto;
     }
-    .lyrics-result .song-title { font-size: 16px; font-weight: 700; color: var(--accent2); margin-bottom: 8px; }
-    .lyrics-result .style-tags { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+
+    .lyrics-result .song-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+
+    .lyrics-result .style-tags {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
     .copy-lyrics-btn {
       margin-top: 10px;
       padding: 8px 16px;
@@ -608,7 +842,11 @@
       font-size: 13px;
       transition: all 0.2s;
     }
-    .copy-lyrics-btn:hover { border-color: var(--accent); color: var(--accent2); }
+
+    .copy-lyrics-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+    }
 
     /* Mode selector for lyrics generation */
     .mode-grid {
@@ -617,6 +855,7 @@
       gap: 10px;
       margin-bottom: 14px;
     }
+
     .mode-card {
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -626,16 +865,31 @@
       transition: all 0.2s;
       text-align: center;
     }
-    .mode-card:hover { border-color: var(--accent); }
+
+    .mode-card:hover {
+      border-color: var(--accent);
+    }
+
     .mode-card.active {
       border-color: var(--accent);
       background: rgba(124, 58, 237, 0.12);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
-    .mode-card .mode-name { font-size: 13px; font-weight: 600; color: var(--accent2); }
-    .mode-card .mode-desc { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+    .mode-card .mode-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent2);
+    }
+
+    .mode-card .mode-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 3px;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
 
@@ -723,7 +977,8 @@
 
         <div class="form-row" style="margin-bottom: 8px;">
           <label>歌词 Lyrics</label>
-          <textarea id="lyrics" placeholder="[Verse]&#10;街灯微亮晚风轻抚&#10;影子拉长独自漫步&#10;[Chorus]&#10;推开木门香气弥漫" style="min-height:200px;"></textarea>
+          <textarea id="lyrics" placeholder="[Verse]&#10;街灯微亮晚风轻抚&#10;影子拉长独自漫步&#10;[Chorus]&#10;推开木门香气弥漫"
+            style="min-height:200px;"></textarea>
           <span class="hint" id="lyricsHint">使用 \n 分隔每行，支持结构标签（见下方快捷标签）</span>
         </div>
 
@@ -832,7 +1087,9 @@
         <div class="status-bar">
           <div class="status-dot" id="statusDot"></div>
           <span id="statusText">准备就绪</span>
-          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
         </div>
       </div>
 
@@ -909,7 +1166,9 @@
         <div class="status-bar">
           <div class="status-dot" id="lyricsStatusDot"></div>
           <span id="lyricsStatusText">准备就绪</span>
-          <div class="progress-bar"><div class="progress-fill" id="lyricsProgressFill"></div></div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="lyricsProgressFill"></div>
+          </div>
         </div>
       </div>
 
@@ -1002,8 +1261,14 @@
         document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
       });
     });
+  </script>
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // DEBUG: 设为 true 则页面加载时直接显示播放器，方便调试 JS
+    const DEBUG_SHOW_PLAYER = false;
+    // ═══════════════════════════════════════════════════════════════
 
-    // ── State ────────────────────────────────────────────────────────────────
+    // ── State ─────────────────────────────────────────────────────────────────
     let selectedModel = 'music-2.6';
     let isCoverModel = false;
     let lyricsMode = 'write_full_song';
@@ -1097,7 +1362,7 @@
       const reader = new FileReader();
       reader.onload = () => {
         const b64 = reader.result.split(',')[1];
-        document.getElementById('fileHint').textContent = `✅ 已加载: ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)`;
+        document.getElementById('fileHint').textContent = `✅ 已加载: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`;
         document.getElementById('fileHint').dataset.base64 = b64;
         updateCoverUI();
       };
@@ -1105,7 +1370,7 @@
     });
 
     // ── Instrumental → disable lyrics ─────────────────────────────────────────
-    document.querySelector('toggle-switch[id="isInstrumental"]').addEventListener('change', function() {
+    document.querySelector('toggle-switch[id="isInstrumental"]').addEventListener('change', function () {
       const lyricsTa = document.getElementById('lyrics');
       const lyricsHint = document.getElementById('lyricsHint');
       if (this.checked) {
@@ -1222,7 +1487,7 @@
         } else {
           await handleSync(apiKey, payload, { statusDot, statusText, progressFill });
         }
-      } catch(err) {
+      } catch (err) {
         statusDot.className = 'status-dot error';
         statusText.textContent = '请求失败: ' + err.message;
         progressFill.style.width = '0%';
@@ -1310,7 +1575,7 @@
               progressFill.style.width = '100%';
               statusDot.className = 'status-dot done';
             }
-          } catch {}
+          } catch { }
         }
       }
 
@@ -1330,44 +1595,13 @@
 
       if (outputFormat === 'url' && data.audio) {
         audioHtml = `
-          <div class="audio-player-wrap">
-            <div class="result-card">
-              <div class="result-card-cover" id="resultCover">
-                <div class="result-cover-placeholder" id="playerCover">🎵</div>
-              </div>
-              <div class="result-card-body">
-                <div class="result-card-meta">
-                  <span class="meta-tag ${data.status === 2 ? 'meta-done' : 'meta-pending'}">${data.status === 2 ? '已完成' : '合成中'}</span>
-                  ${info.music_duration ? `<span class="meta-chip">${(info.music_duration / 1000).toFixed(1)}s</span>` : ''}
-                  ${info.music_size ? `<span class="meta-chip">${(info.music_size / 1024 / 1024).toFixed(1)} MB</span>` : ''}
-                </div>
-                <div class="result-player-row">
-                  <span class="player-time" id="curTime">0:00</span>
-                  <div class="player-seek-wrap">
-                    <input type="range" id="seekBar" min="0" max="100" value="0" class="seek-slider" />
-                    <div class="seek-fill" id="seekFill" style="width:0%"></div>
-                  </div>
-                  <span class="player-time" id="totTime">0:00</span>
-                </div>
-                <div class="result-player-controls">
-                  <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay(this)">
-                    <span class="ctrl-icon">▶</span>
-                  </button>
-                  <button class="ctrl-btn" onclick="toggleMute(this)">🔊</button>
-                  <div class="vol-wrap">
-                    <input type="range" id="volBar" min="0" max="1" step="0.02" value="1" class="vol-slider" oninput="setVolume(this.value)" />
-                  </div>
-                  <div class="ctrl-spacer"></div>
-                  <a class="action-btn action-primary" href="${data.audio}" download="music.mp3">⬇ 下载</a>
-                  <button class="action-btn action-secondary" id="genCoverBtn" onclick="generateCover()">
-                    <span class="spinner-small"></span>
-                    <span class="btn-icon">🎨 封面</span>
-                  </button>
-                  <a class="action-btn action-secondary" id="downloadCoverBtn" style="display:none" download="cover.jpg">⬇ 封面</a>
-                </div>
-              </div>
-            </div>
-            <img class="cover-img" id="coverImg" src="" alt="封面" style="display:none" />
+          <audio id="bgAudio" src="${data.audio}" controls style="width:100%;border-radius:10px;"></audio>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+            <button class="action-btn action-secondary" id="genCoverBtn" onclick="generateCover()">
+              <span class="spinner-small"></span>
+              <span class="btn-icon btn-gencover">🎨 封面</span>
+            </button>
+            <a class="action-btn action-secondary" id="downloadCoverBtn" style="display:none" download="cover.jpg">⬇ 封面</a>
           </div>`;
       } else if (data.audio) {
         const hex = data.audio;
@@ -1380,44 +1614,13 @@
         const blob = new Blob([ab], { type: 'audio/mpeg' });
         const url = URL.createObjectURL(blob);
         audioHtml = `
-          <div class="audio-player-wrap">
-            <div class="result-card">
-              <div class="result-card-cover" id="resultCover">
-                <div class="result-cover-placeholder" id="playerCover">🎵</div>
-              </div>
-              <div class="result-card-body">
-                <div class="result-card-meta">
-                  <span class="meta-tag ${data.status === 2 ? 'meta-done' : 'meta-pending'}">${data.status === 2 ? '已完成' : '合成中'}</span>
-                  ${info.music_duration ? `<span class="meta-chip">${(info.music_duration / 1000).toFixed(1)}s</span>` : ''}
-                  ${info.music_size ? `<span class="meta-chip">${(info.music_size / 1024 / 1024).toFixed(1)} MB</span>` : ''}
-                </div>
-                <div class="result-player-row">
-                  <span class="player-time" id="curTime">0:00</span>
-                  <div class="player-seek-wrap">
-                    <input type="range" id="seekBar" min="0" max="100" value="0" class="seek-slider" />
-                    <div class="seek-fill" id="seekFill" style="width:0%"></div>
-                  </div>
-                  <span class="player-time" id="totTime">0:00</span>
-                </div>
-                <div class="result-player-controls">
-                  <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay(this)">
-                    <span class="ctrl-icon">▶</span>
-                  </button>
-                  <button class="ctrl-btn" onclick="toggleMute(this)">🔊</button>
-                  <div class="vol-wrap">
-                    <input type="range" id="volBar" min="0" max="1" step="0.02" value="1" class="vol-slider" oninput="setVolume(this.value)" />
-                  </div>
-                  <div class="ctrl-spacer"></div>
-                  <a class="action-btn action-primary" href="${url}" download="music.mp3">⬇ 下载</a>
-                  <button class="action-btn action-secondary" id="genCoverBtn" onclick="generateCover()">
-                    <span class="spinner-small"></span>
-                    <span class="btn-icon">🎨 封面</span>
-                  </button>
-                  <a class="action-btn action-secondary" id="downloadCoverBtn" style="display:none" download="cover.jpg">⬇ 封面</a>
-                </div>
-              </div>
-            </div>
-            <img class="cover-img" id="coverImg" src="" alt="封面" style="display:none" />
+          <audio id="bgAudio" src="${url}" controls style="width:100%;border-radius:10px;"></audio>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+            <button class="action-btn action-secondary" id="genCoverBtn" onclick="generateCover()">
+              <span class="spinner-small"></span>
+              <span class="btn-icon btn-gencover">🎨 封面</span>
+            </button>
+            <a class="action-btn action-secondary" id="downloadCoverBtn" style="display:none" download="cover.jpg">⬇ 封面</a>
           </div>`;
       } else {
         audioHtml = '<p style="color:var(--text-dim)">无音频数据，请检查模型响应</p>';
@@ -1427,6 +1630,21 @@
         ${audioHtml}
       `;
     }
+
+    // DEBUG: 页面加载时直接显示播放器，方便调试 JS
+    document.addEventListener('DOMContentLoaded', () => {
+      if (DEBUG_SHOW_PLAYER) {
+        const debugAudio = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+        const contentEl = document.getElementById('tab-music-result');
+        if (contentEl) {
+          contentEl.innerHTML = `
+            <div style="background:var(--surface2);border-radius:16px;padding:20px;">
+              <p style="color:var(--accent2);margin-bottom:12px;font-size:13px;">🔧 DEBUG 播放器</p>
+              <audio id="bgAudio" src="${debugAudio}" controls style="width:100%;border-radius:10px;"></audio>
+            </div>`;
+        }
+      }
+    });
 
     // ── Lyrics Generation ─────────────────────────────────────────────────────
     async function handleLyricsGenerate() {
@@ -1496,7 +1714,7 @@
         statusText.textContent = '生成完成';
 
         showLyricsResult(json);
-      } catch(err) {
+      } catch (err) {
         statusDot.className = 'status-dot error';
         statusText.textContent = '请求失败: ' + err.message;
         progressFill.style.width = '0%';
@@ -1610,7 +1828,7 @@
         dlBtn.href = URL.createObjectURL(currentCoverBlob);
 
         btn.querySelector('.btn-icon').textContent = '🔄 重新生成';
-      } catch(err) {
+      } catch (err) {
         alert('封面生成失败: ' + err.message);
       } finally {
         btn.classList.remove('loading');
@@ -1699,10 +1917,11 @@
         const msg = document.getElementById('feedbackMsg');
         msg.classList.add('show');
         setTimeout(() => msg.classList.remove('show'), 3000);
-      } catch(e) {
+      } catch (e) {
         alert('反馈提交失败: ' + e.message);
       }
     }
   </script>
 </body>
+
 </html>
