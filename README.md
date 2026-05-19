@@ -7,6 +7,7 @@
 4. [webapi docs](https://webapi.smalljerry.cn/)
 5. 🎵 [MiniMax Music](https://smalljerry.cn/ademo/music.html) 音乐、歌词生成（Music、Lyrics Generation）
 6. [File System Access](https://smalljerry.cn/ademo/fs-access.html)
+7. 🖱️ [Mouse Effect](https://smalljerry.cn/ademo/mouse-effect.html)
 
 ## 片段 fragment
 1. [Blob使用示例](https://smalljerry.cn/ademo/blob-examples.html)
